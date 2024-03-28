@@ -2,7 +2,13 @@ import * as React from 'react'
 
 function Board() {
   // 🐨 squares é o estado para este componente. Adicione useState para squares
-  const squares = Array(9).fill(null)
+  const [squares, setSquares] = React.useState(
+    // Como o valor armazenado no localStorage é string, precisamos
+    // converter de volta para vetor usando JSON.parse()
+    // Retornamos o valor usando uma função para que a leitura do localStorage
+    // aconteça apenas na fase de montagem do componente (LAZY INITIALIZER)
+    () => JSON.parse(window.localStorage.getItem('squares')) ?? Array(9).fill(null)
+  )
 
   // 🐨 Precisaremos dos seguintes itens de estados derivados:
   // - nextValue ('X' ou 'O')
@@ -10,6 +16,9 @@ function Board() {
   // - status (`Vencedor: ${winner}`, `Deu velha!`, or `Próximo jogador: ${nextValue}`)
   // 💰 Os respectivos cálculos já estão prontos. Basta usar os utilitários 
   // mais abaixo no código para criar essas variáveis
+  const nextValue = calculateNextValue(squares)
+  const winner = calculateWinner(squares)
+  const status = calculateStatus(winner, squares, nextValue)
 
   // Esta é a função que o manipulador de clique no quadrado irá chamar. `square`
   // deve ser um índice. Portanto, se você clicar sobre o quadrado central, o
@@ -27,16 +36,20 @@ function Board() {
     //
     // 🐨 faça uma cópia da matriz dos quadrados
     // 💰 `[...squares]` é do que você precisa!)
+    const squaresCopy = [...squares]
     
     // 🐨 ajuste o valor do quadrado que foi selecionado
     // 💰 `squaresCopy[square] = nextValue`
+    squaresCopy[square] = nextValue
     
     // 🐨 atribua a cópia à matriz dos quadrados
+    setSquares(squaresCopy)
   }
 
   function restart() {
     // 🐨 volte os quadrados ao estado inicial
     // 💰 `Array(9).fill(null)` é do que você precisa!
+    setSquares(Array(9).fill(null))
   }
 
   function renderSquare(i) {
@@ -47,10 +60,17 @@ function Board() {
     )
   }
 
+  React.useEffect(() => {
+    // Uma vez que localStorage() só aceita valores do tipo string,
+    // é necessário converter 'squares' de vetor para string usand
+    // JSON.stringify()
+    window.localStorage.setItem('squares', JSON.stringify(squares))
+  }, [squares])
+
   return (
     <div>
       {/* 🐨 coloque o status na div abaixo */}
-      <div className="status"></div>
+      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -70,6 +90,7 @@ function Board() {
         restart
       </button>
       <hr />
+      <p>{JSON.stringify(squares)}</p>
     </div>
   )
 }
