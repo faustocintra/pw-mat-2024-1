@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROVA 1 &bull; Programação Web 2023/1</title>
+  <style>
+        * {
+            font-family: Calibri, Arial, sans-serif;
+        }
+        body {
+            background: maroon;
+            background: linear-gradient(0deg, maroon 0%, coral 100%);
+            height: 100vh;
+        }
+        main {
+            margin: 5%;
+            background-color: white;
+            padding: 25px;
+            border-radius: 25px;
+            box-shadow: 5px 5px rgba(250, 250, 250, 0.2);
+        }
+        h1 {
+            color: maroon;
+            text-shadow: 2px 2px rgba(0, 100, 0, 0.2);
+            text-align: center;
+        }
+        label span {
+            display: block;
+        }
+        .input-set, .result {
+            margin: 15px auto;
+            padding: 10px;
+            width: 50%;
+            text-align: center;
+        }
+        .input-set label {
+            display: block;
+            color: maroon
+        }
+        .result {
+            background-color: maroon;
+            color: white;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <div id="root"></div>
+
+  <script type="text/babel">
+
+    function Page() {
+
+            /*
+                1. Declare uma única variável de estado (objeto), com os campos "preco" e
+                   "desconto", ambas com valor inicial 0. Declare, também, as variáveis
+                   somente-leitura correspondentes aos campos da variável de estado.
+            */
+            const [state, setState] = React.useState(
+                // Leitura a partir do localStorage usando lazy initializer
+                () => JSON.parse(window.localStorage.getItem('state')) ?? { preco: 0, desconto: 0 }
+            )
+            const { preco, desconto } = state
+           
+            /*
+
+                2. Declare uma única função para manipular os eventos onChange de ambos
+                   os inputs. Dentro dessa função, atualize o valor das variável de estado
+                   de acordo com o valor do input que foi modificado.
+            */
+            function handleChange(event) {
+                if(event.target.name == 'preco') {
+                    setState({...state, preco: Number(event.target.value)})
+                }
+                else {
+                    setState({...state, desconto: Number(event.target.value)})
+                }
+            }
+
+            /*
+
+                3. Declare uma função que retorne o valor do preço com desconto. Logo abaixo,
+                   já fora da função, declare uma variável comum que receba o valor retornado
+                   por uma chamada à função (estado calculado).
+
+            */
+            function calcularPrecoComDesconto() {
+                return preco - (preco * desconto / 100)
+            }
+            const precoComDesconto = calcularPrecoComDesconto()
+
+            /*
+
+                4. Declare uma segunda função que determine e retorne a classe de desconto, 
+                   a saber:
+                   - Desconto <= 15% ~> Desconto negocial
+                   - Desconto entre 15,1% e 50% ~> Desconto promocional
+                   - Desconto acima de 50% ~> Desconto de liquidação
+                   Logo abaixo da função, declare uma variável comum que receba o valor retornado
+                   por uma chamada à segunda função (estado calculado).
+            */
+            function determinarClasseDesconto() {
+                if(desconto <= 15) return 'Desconto negocial'
+                if(desconto < 50) return 'Desconto promocional'
+                else return 'Desconto de liquidação'
+            }
+            const classeDesconto = determinarClasseDesconto()
+
+            /*
+                
+                5. Transforme os dois inputs em componentes controlados.
+            */
+            
+            /*
+
+                6. Exiba o valor das variáveis de estado calculado nos locais apropriados.
+
+            */
+
+            /*
+
+                7. Adicione o mecanismo para salvar o valor dos inputs no localStorage após eles
+                   serem atualizados, e para ler os valores salvos no localStorage restaurando
+                   o estado dos inputs se a página for fechada e aberta novamente.
+            */
+            React.useEffect(() => {
+                window.localStorage.setItem('state', JSON.stringify(state))
+            }, [state])
+
+            /*
+
+                8. Comente os principais trechos do seu código.
+
+                Após terminar, anexe sua prova no Microsoft Teams.
+
+                ATENÇÃO: A PROVAS COM ALTO GRAU DE SEMELHANÇA, INDÍCIOS DE PLÁGIO OU DE UTILIZAÇÃO
+                         DE INTELIGÊNCIA ARTIFICIAL SERÁ ATRIBUÍDA A NOTA *ZERO*.
+
+                O horário limite é 11h. Não serão aceitas provas enviadas após esse horário, ou por
+                outros meios que não o Microsoft Teams.
+
+                Boa prova!
+            */
+
+            return (<main>
+                <h1>Cálculo de descontos</h1>
+
+                <div id="container">
+                    <div className="input-set">
+                        <label>
+                            <span>Preço cheio</span>
+                            <input name="preco" type="number" onChange={handleChange} value={preco} />
+                        </label>
+                    </div>
+
+                    <div className="input-set">
+                        <label>
+                            <span>Desconto (%)</span>
+                            <input name="desconto" type="number" onChange={handleChange} value={desconto} />
+                        </label>
+                    </div>
+
+                    <div className="result">
+                        <div>Preço com desconto: {precoComDesconto}</div>
+                        <div>Classe: {classeDesconto}</div>
+                    </div>
+                </div>
+            </main>)
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'))
+        root.render(<Page />)
+
+  </script>
+</body>
+</html>
