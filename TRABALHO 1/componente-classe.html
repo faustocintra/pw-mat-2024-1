@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+
+    class FormSoma extends React.Component {
+
+      /* No constructor(), são inicializadas as variáveis de estado,
+         assim como é feito com useState() em componentes funcionais */
+      constructor(props) {
+        super(props)
+        this.state = {
+          num1: 0,
+          num2: 0,
+          soma: 0
+        }
+
+        /* É necessario fazer o "bind" para que os manipuladores de eventos
+           possam usar o "this" da classe */
+        this.handleChange1 = this.handleChange1.bind(this)
+        this.handleChange2 = this.handleChange2.bind(this)
+      }
+
+      /* Este é o método equivalente ao useEffect() */
+      componentDidUpdate(prevProps, prevState) {
+
+        let novaSoma = isNaN(this.state.num1) || isNaN(this.state.num2) ? '' : this.state.num1 + this.state.num2
+
+        /* Para evitar atualizações desnecessárias e em grande número, é
+           necessário verificar se o valor realmente sofreu alterações */
+        if(prevState.soma !== novaSoma) this.setState({soma: novaSoma})
+        
+      }
+
+      /* Manipulares de eventos dos inputs, transformados em funções no
+         formato "clássico" para funcionarem dentro de uma classe */
+      handleChange1(event) {
+        this.setState({num1: Number(event.target.value)})
+      }
+
+      handleChange2(event) {
+        this.setState({num2: Number(event.target.value)})
+      }
+          
+      render() {
+        return (
+            <form>
+                <div>
+                    <label htmlFor="num1">Primeiro número:</label><br />
+                    <input id="num1" type="number" value={this.state.num1} onChange={this.handleChange1} />
+                </div>
+                <div>
+                    <label htmlFor="num2">Segundo número:</label><br />
+                    <input id="num2" type="number" value={this.state.num2} onChange={this.handleChange2} />
+                </div>
+                <div>Soma: {this.state.soma}</div>
+            </form>
+        )
+      }
+
+    }
+
+    ReactDOM.render(<FormSoma />, document.getElementById('root'))
+
+  </script>
+
+</body>
+</html>

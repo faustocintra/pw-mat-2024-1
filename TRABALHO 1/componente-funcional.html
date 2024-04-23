@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de área de formas geométricas planas</title>
+  <style>
+    * {
+      font-family: Candara, Arial, sans;
+    }
+    body {
+      background: linear-gradient(0deg, rgba(4,0,36,0.75) 0%, rgba(9,121,91,1) 35%, rgba(0,255,162,1) 100%);
+      height: 100vh;
+    }
+    main {
+      margin: 40px auto;
+      width: 512px;
+      max-width: 80%;
+      padding: 20px;
+      background-color: white;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+    label {
+      display: block;
+      margin-bottom: 16px;
+    }
+    label span {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+
+    const FormSoma = () => {
+
+
+        const [base, setBase] = React.useState(
+          () => window.localStorage.getItem('__base') || ''
+        )
+        const [altura, setAltura] = React.useState(
+          () => window.localStorage.getItem('__altura') || ''
+        )
+        const [tipo, setTipo] = React.useState(
+          () => window.localStorage.getItem('__tipo') || 'R'
+        )
+
+        function calcularArea() {
+          let resultado
+          
+          switch(tipo) {
+            case 'R':   // Retângulo
+              resultado = Number(base) * Number(altura)
+              break
+            case 'T':   // Triângulo
+              resultado = Number(base) * Number(altura) / 2
+              break
+            default:    // Elipse/círculo
+              resultado = (Number(base) / 2) * (Number(altura) / 2) * Math.PI
+          }
+
+          if(isNaN(resultado)) resultado = ''
+          else resultado = resultado.toLocaleString('pt-BR')
+
+          return resultado
+        }
+
+        const area = calcularArea()
+
+        // Armazena as variáveis de estado no localStorage
+        // para retomada mesmo após fechar o navegador
+        React.useEffect(() => {
+          window.localStorage.setItem('__base', base)
+          window.localStorage.setItem('__altura', altura)
+          window.localStorage.setItem('__tipo', tipo)
+        }, [base, altura, tipo])
+
+        return (
+            <main>
+              <h1>Calculadora de área de formas geométricas planas</h1>
+              <form>
+                
+                <label>
+                  <span>Medida da base</span>
+                  <input 
+                    type="number" 
+                    value={base}
+                    onChange={e => setBase(e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  <span>Medida da altura</span>
+                  <input 
+                    type="number" 
+                    value={altura}
+                    onChange={e => setAltura(e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  <span>Tipo de forma</span>
+                  <select value={tipo} onChange={e => setTipo(e.target.value)}>
+                    <option value="R">Retângulo</option>
+                    <option value="T">Triângulo</option>
+                    <option value="E">Elipse/círculo</option>
+                  </select> 
+                </label>
+
+                <label>
+                  <span>Área calculada</span>
+                  <div><strong>{area}</strong></div>
+                </label>
+
+              </form>
+            </main>
+        )
+
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<FormSoma />)
+
+  </script>
+
+</body>
+</html>

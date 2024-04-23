@@ -2,3 +2,16 @@ body {
   margin: 0;
   padding: 0;
 }
+
+/* Oculta os botões de editar e excluir dos datagrids, por padrão */
+.MuiDataGrid-row button {
+  visibility: hidden;
+}
+
+/* 
+  Reexibe os botões de editar e excluir de um datagrid quando o cursor
+  do mouse estiver sobre uma linha da grid
+*/
+.MuiDataGrid-row:hover button {
+  visibility: visible;
+}
