@@ -1,7 +1,7 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import Box from '@mui/material/Box'
+import { DataGrid } from '@mui/x-data-grid'
 import myfetch from '../../lib/myfetch'
 import IconButton from '@mui/material/IconButton'
 import { Link } from 'react-router-dom'
@@ -9,8 +9,11 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import Waiting from '../../ui/Waiting'
+import AddBoxIcon from '@mui/icons-material/AddBox'
+//import Waiting from '../../ui/Waiting'
+import useConfirmDialog from '../../ui/useConfirmDialog'
+import useNotification from '../../ui/useNotification'
+import useWaiting from '../../ui/useWaiting'
 
 export default function CustomerList() {
 
@@ -78,13 +81,15 @@ export default function CustomerList() {
   ]
 
   const [state, setState] = React.useState({
-    customers: [],
-    showWaiting: false
+    customers: []
   })
   const {
-    customers,
-    showWaiting
+    customers
   } = state
+
+  const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
+  const { notify, Notification } = useNotification()
+  const { showWaiting, Waiting } = useWaiting()
 
   /*
     useEffect() com vetor de dependências vazio, para ser executado
@@ -98,23 +103,26 @@ export default function CustomerList() {
 
   async function fetchData() {
     // Exibe a tela de espera
-    setState({ ...state, showWaiting: true })
+    showWaiting()
     try {
       const result = await myfetch.get('/customers?by=name')
       
-      // Coloca o resultado no vetor customers e desliga a tela de espera
-      setState({ ...state, customers: result, showWaiting: false })
+      // Coloca o resultado no vetor customers
+      setState({ ...state, customers: result })
     }
     catch(error) {
-      console.log(error)
-
-      // Desliga a tela de espera
-      setState({ ...state, showWaiting: false })
+      console.error(error)
+      notify('ERRO: ' + error.message, 'error')
+    }
+    finally {
+      // Oculta a tela de espera
+      showWaiting(false)
     }
   }
 
   async function handleDeleteButtonClick(deleteId) {
-    if(confirm('Deseja realmente excluir este item?')) {
+    if(await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
+      showWaiting()   // Exibe a tela de espera
       try {
         // Efetua uma chamada ao back-end para tentar excluir o item
         await myfetch.delete(`/customers/${deleteId}`)
@@ -122,17 +130,25 @@ export default function CustomerList() {
         // Recarrega os dados da grid
         fetchData()
 
-        alert('Item excluído com sucesso.')
+        notify('Item excluído com sucesso.')
       }
       catch(error) {
-        alert(error.message)
+        console.error(error)
+        notify('ERRO: ' + error.message, 'error')
+      }
+      finally {
+        showWaiting(false)  // Ocultar a tela de espera
       }
     }
   }
 
   return(
     <>
-      <Waiting show={showWaiting} />
+      <Waiting />
+
+      <Notification />
+
+      <ConfirmDialog />
 
       <Typography variant="h1" gutterBottom>
         Listagem de clientes
