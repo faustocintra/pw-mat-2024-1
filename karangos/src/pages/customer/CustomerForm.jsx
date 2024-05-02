@@ -1,6 +1,5 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
-import { useParams } from 'react-router-dom'
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import InputMask from 'react-input-mask'
@@ -10,10 +9,30 @@ import { ptBR }  from 'date-fns/locale/pt-BR'
 import { parseISO } from 'date-fns'
 import MenuItem from '@mui/material/MenuItem'
 import Button from '@mui/material/Button'
+import useConfirmDialog from '../../ui/useConfirmDialog'
+import useNotification from '../../ui/useNotification'
+import useWaiting from '../../ui/useWaiting'
+import { useNavigate, useParams } from 'react-router-dom'
+import myfetch from '../../lib/myfetch'
 
 export default function CustomerForm() {
+  
+  const formDefaults = {
+    name: '',
+    ident_document: '',
+    birth_date: '',
+    street_name: '',
+    house_number: '',
+    additional_info: '',
+    district: '',
+    city: '',
+    uf: '',
+    phone: '',
+    email: ''
+  }
+  
   const [state, setState] = React.useState({
-    customer: {},
+    customer: { ...formDefaults },
     formModified: false
   })
   const {
@@ -31,6 +50,11 @@ export default function CustomerForm() {
     { value: 'RJ', label: 'Rio de Janeiro' },
     { value: 'SP', label: 'São Paulo' },
   ]
+
+  const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
+  const { notify, Notification } = useNotification()
+  const { showWaiting, Waiting } = useWaiting()
+  const navigate = useNavigate()
 
   const phoneMaskFormatChars = {
     '9': '[0-9]',
@@ -51,10 +75,72 @@ export default function CustomerForm() {
 
   async function handleFormSubmit(e) {
     e.preventDefault()    // Evita o recarregamento da página
+    // Exibir a tela de espera
+    showWaiting(true)
+    try {
+      // Envia os dados para o back-end para criar um novo cliente
+      // no banco de dados
+      
+      // Se houver parâmetro na rota, significa que estamos editando.
+      // Portanto, precisamos enviar os dados ao back-end com o verbo PUT
+      if(params.id) await myfetch.put(`/customers/${params.id}`, customer)
+      
+      // Senão, os dados serão enviados com o método POST para a criação de
+      // um novo cliente
+      else await myfetch.post('/customers', customer)
+
+      // Deu certo, vamos exibir a mensagem de feedback que, quando fechada,
+      // vai nos mandar de volta para a listagem de clientes
+      notify('Item salvo com sucesso.', 'success', 4000, () => {
+        navigate('..', { relative: 'path', replace: true })
+      })
+    }
+    catch(error) {
+      console.error(error)
+      // Deu errado, exibimos o erro e permanecemos na página do formulário
+      notify(error.message, 'error')
+    }
+    finally {
+      showWaiting(false)
+    }
   }
+  
+  // useEffect() que é executado uma vez no carregamento da página.
+  // Verifica se a rota tem parâmetros e, caso tenha, significa que estamos
+  // vindo do botão de edição. Nesse caso, chama a função loadData() para
+  // buscar os dados do cliente a ser editado no back-end
+  React.useEffect(() => {
+    if(params.id) loadData()
+  }, [])
+
+  async function loadData() {
+    showWaiting(true)
+    try {
+      const result = await myfetch.get(`/customers/${params.id}`)
+      
+      // Converte o formato de data armazenado no banco de dados
+      // para o formato reconhecido pelo componente DatePicker
+      result.birth_date = parseISO(result.birth_date)
+
+      setState({...state, customer: result})
+    }
+    catch(error) {
+      console.error(error)
+      notify(error.message, 'error')
+    }
+    finally {
+      showWaiting(false)
+    }
+  }
+
 
   return(
     <>
+
+      <ConfirmDialog />
+      <Notification />
+      <Waiting />
+
       <Typography variant="h1" gutterBottom>
         { params.id ? `Editar cliente ${params.id}` : 'Cadastrar novo cliente' }
       </Typography>
