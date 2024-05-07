@@ -14,13 +14,15 @@ import useNotification from '../../ui/useNotification'
 import useWaiting from '../../ui/useWaiting'
 import { useNavigate, useParams } from 'react-router-dom'
 import myfetch from '../../lib/myfetch'
+import Customer from '../../models/customer'
+import { ZodError } from 'zod'
 
 export default function CustomerForm() {
   
   const formDefaults = {
     name: '',
     ident_document: '',
-    birth_date: '',
+    birth_date: null,
     street_name: '',
     house_number: '',
     additional_info: '',
@@ -30,14 +32,16 @@ export default function CustomerForm() {
     phone: '',
     email: ''
   }
-  
+
   const [state, setState] = React.useState({
     customer: { ...formDefaults },
-    formModified: false
+    formModified: false,
+    inputErrors: {}
   })
   const {
     customer,
-    formModified
+    formModified,
+    inputErrors
   } = state
 
   const states = [
@@ -78,9 +82,12 @@ export default function CustomerForm() {
     // Exibir a tela de espera
     showWaiting(true)
     try {
+      // Invoca a validação dos dados de entrada da biblioteca Zod
+      // por meio do model Customer
+      Customer.parse(customer)
+
       // Envia os dados para o back-end para criar um novo cliente
       // no banco de dados
-      
       // Se houver parâmetro na rota, significa que estamos editando.
       // Portanto, precisamos enviar os dados ao back-end com o verbo PUT
       if(params.id) await myfetch.put(`/customers/${params.id}`, customer)
@@ -97,8 +104,19 @@ export default function CustomerForm() {
     }
     catch(error) {
       console.error(error)
-      // Deu errado, exibimos o erro e permanecemos na página do formulário
-      notify(error.message, 'error')
+      if(error instanceof ZodError) {
+        // Formamos um objeto contendo os erros do Zod e
+        // os colocamos na variável de estado inputErrors
+        const errorMessages = {}
+        for(let e of error.issues) errorMessages[e.path[0]] = e.message
+        setState({ ...state, inputErrors: errorMessages })
+        notify('Há campos com valores inválidos no formulário', 'error')
+      }
+      else {
+        console.error(error)
+        // Deu errado, exibimos o erro e permanecemos na página do formulário
+        notify(error.message, 'error')
+      }
     }
     finally {
       showWaiting(false)
@@ -133,6 +151,14 @@ export default function CustomerForm() {
     }
   }
 
+  async function handleBackButtonClick() {
+    if(formModified && 
+      ! await askForConfirmation('Há informações não salvas. Deseja realmente sair?')) {
+      return  // Sai sem fazer nada
+    }
+    // Navega para a página anterior
+    navigate('..', { relative: 'path', replace: true })
+  }
 
   return(
     <>
@@ -156,7 +182,9 @@ export default function CustomerForm() {
             fullWidth
             autoFocus
             value={customer.name}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange} 
+            error={inputErrors?.name}
+            helperText={inputErrors?.name} 
           />
 
           <InputMask
@@ -171,7 +199,9 @@ export default function CustomerForm() {
                   label="CPF"
                   variant="filled"
                   required
-                  fullWidth                   
+                  fullWidth
+                  error={inputErrors?.ident_document}
+                  helperText={inputErrors?.ident_document}                    
                 />
             }
           </InputMask>
@@ -244,7 +274,7 @@ export default function CustomerForm() {
           />
 
           <TextField 
-            name="state"
+            name="uf"
             label="UF"
             variant="filled"
             required
@@ -303,13 +333,16 @@ export default function CustomerForm() {
 
             <Button
               variant="outlined"
+              onClick={handleBackButtonClick}
             >
               Voltar
             </Button>
           </Box>
 
-          <Box sx={{ fontFamily: 'monospace', display: 'flex', width: '100%' }}>
+          <Box sx={{ fontFamily: 'monospace', display: 'flex', flexDirection: 'column', width: '100%' }}>
             {JSON.stringify(customer)}
+            <hr />
+            {JSON.stringify(inputErrors)}
           </Box>
         
         </form>
