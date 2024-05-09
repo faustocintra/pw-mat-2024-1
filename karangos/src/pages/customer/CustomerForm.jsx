@@ -216,7 +216,9 @@ export default function CustomerForm() {
               slotProps={{
                 textField: {
                   variant: 'filled',
-                  fullWidth: true
+                  fullWidth: true,
+                  error: inputErrors?.birth_date,
+                  helperText: inputErrors?.birth_date
                 }
               }}
             />
@@ -230,7 +232,9 @@ export default function CustomerForm() {
             fullWidth
             placeholder="Ex.: Rua Principal"
             value={customer.street_name}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange}
+            error={inputErrors?.street_name}
+            helperText={inputErrors?.street_name}  
           />
 
           <TextField 
@@ -240,7 +244,9 @@ export default function CustomerForm() {
             required
             fullWidth
             value={customer.house_number}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange}
+            error={inputErrors?.house_number}
+            helperText={inputErrors?.house_number}  
           />
 
           <TextField 
@@ -250,7 +256,9 @@ export default function CustomerForm() {
             fullWidth
             placeholder="Apto., bloco, casa, etc."
             value={customer.additional_info}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange}
+            error={inputErrors?.additional_info}
+            helperText={inputErrors?.additional_info} 
           />
 
           <TextField 
@@ -260,7 +268,9 @@ export default function CustomerForm() {
             required
             fullWidth
             value={customer.district}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange} 
+            error={inputErrors?.district}
+            helperText={inputErrors?.district}  
           />
 
           <TextField 
@@ -270,7 +280,9 @@ export default function CustomerForm() {
             required
             fullWidth
             value={customer.city}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange} 
+            error={inputErrors?.city}
+            helperText={inputErrors?.city}  
           />
 
           <TextField 
@@ -282,6 +294,8 @@ export default function CustomerForm() {
             value={customer.uf}
             onChange={handleFieldChange}
             select
+            error={inputErrors?.uf}
+            helperText={inputErrors?.uf} 
           >
             {
               states.map(s => 
@@ -306,7 +320,9 @@ export default function CustomerForm() {
                   label="Telefone/celular"
                   variant="filled"
                   required
-                  fullWidth                   
+                  fullWidth 
+                  error={inputErrors?.phone}
+                  helperText={inputErrors?.phone}                   
                 />
             }
           </InputMask>
@@ -320,6 +336,8 @@ export default function CustomerForm() {
             fullWidth
             value={customer.email}
             onChange={handleFieldChange}  
+            error={inputErrors?.email}
+            helperText={inputErrors?.email} 
           />
 
           <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
@@ -339,11 +357,11 @@ export default function CustomerForm() {
             </Button>
           </Box>
 
-          <Box sx={{ fontFamily: 'monospace', display: 'flex', flexDirection: 'column', width: '100%' }}>
+          {/* <Box sx={{ fontFamily: 'monospace', display: 'flex', flexDirection: 'column', width: '100%' }}>
             {JSON.stringify(customer)}
             <hr />
             {JSON.stringify(inputErrors)}
-          </Box>
+          </Box> */}
         
         </form>
       </Box>

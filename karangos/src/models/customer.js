@@ -62,7 +62,7 @@ const Customer = z.object({
 
   phone:
     z.string()
-    .transform(val => val.replace('_', ''))
+    .transform(val => val.replace(' ', ''))
     // Depois de um transform(), não podemos usar length(). Por isso, devemos
     // usar uma função personalizada com refine() para validar o tamanho do
     // campo
