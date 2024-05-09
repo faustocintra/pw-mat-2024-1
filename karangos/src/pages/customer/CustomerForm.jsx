@@ -182,9 +182,9 @@ export default function CustomerForm() {
             fullWidth
             autoFocus
             value={customer.name}
-            onChange={handleFieldChange} 
+            onChange={handleFieldChange}
             error={inputErrors?.name}
-            helperText={inputErrors?.name} 
+            helperText={inputErrors?.name}  
           />
 
           <InputMask
@@ -201,7 +201,7 @@ export default function CustomerForm() {
                   required
                   fullWidth
                   error={inputErrors?.ident_document}
-                  helperText={inputErrors?.ident_document}                    
+                  helperText={inputErrors?.ident_document}                     
                 />
             }
           </InputMask>
@@ -217,8 +217,8 @@ export default function CustomerForm() {
                 textField: {
                   variant: 'filled',
                   fullWidth: true,
-                  error: inputErrors?.birth_date,
-                  helperText: inputErrors?.birth_date
+                  error:inputErrors?.birth_date,
+                  helperText:inputErrors?.birth_date
                 }
               }}
             />
@@ -232,9 +232,9 @@ export default function CustomerForm() {
             fullWidth
             placeholder="Ex.: Rua Principal"
             value={customer.street_name}
-            onChange={handleFieldChange}
+            onChange={handleFieldChange}  
             error={inputErrors?.street_name}
-            helperText={inputErrors?.street_name}  
+            helperText={inputErrors?.street_name}
           />
 
           <TextField 
@@ -256,9 +256,9 @@ export default function CustomerForm() {
             fullWidth
             placeholder="Apto., bloco, casa, etc."
             value={customer.additional_info}
-            onChange={handleFieldChange}
+            onChange={handleFieldChange}  
             error={inputErrors?.additional_info}
-            helperText={inputErrors?.additional_info} 
+            helperText={inputErrors?.additional_info}
           />
 
           <TextField 
@@ -270,7 +270,7 @@ export default function CustomerForm() {
             value={customer.district}
             onChange={handleFieldChange} 
             error={inputErrors?.district}
-            helperText={inputErrors?.district}  
+            helperText={inputErrors?.district} 
           />
 
           <TextField 
@@ -280,7 +280,7 @@ export default function CustomerForm() {
             required
             fullWidth
             value={customer.city}
-            onChange={handleFieldChange} 
+            onChange={handleFieldChange}
             error={inputErrors?.city}
             helperText={inputErrors?.city}  
           />
@@ -320,9 +320,9 @@ export default function CustomerForm() {
                   label="Telefone/celular"
                   variant="filled"
                   required
-                  fullWidth 
+                  fullWidth
                   error={inputErrors?.phone}
-                  helperText={inputErrors?.phone}                   
+                  helperText={inputErrors?.phone}                  
                 />
             }
           </InputMask>
@@ -335,7 +335,7 @@ export default function CustomerForm() {
             required
             fullWidth
             value={customer.email}
-            onChange={handleFieldChange}  
+            onChange={handleFieldChange}
             error={inputErrors?.email}
             helperText={inputErrors?.email} 
           />
