@@ -8,7 +8,7 @@ Perguntas que o comando faz:
 * Select a variant: JavaScript
 
 Em seguida, executar os seguintes comandos no terminal:
-* cd front-end
+* cd karangos
 * npm install
 * npm run dev
 
