@@ -28,7 +28,7 @@ export default function MainMenu() {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClick}
       >
-        <MenuIcon />
+      <MenuIcon />
       </IconButton>
       <Menu
         id="basic-menu"
