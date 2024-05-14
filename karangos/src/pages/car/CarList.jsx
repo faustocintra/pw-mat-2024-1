@@ -21,31 +21,28 @@ export default function CustomerList() {
     { 
       field: 'id', 
       headerName: 'Id', 
-      width: 70,
+      width: 100,
       type: "number"
     },
     {
       field: 'brand',
       headerName: 'Marca',
       width: 200,
-      renderCell: params => (
-        brand = params.getValue(params.id, 'brand'),
-        model = params.getValue(params.id, 'model'),
-
-        <Link to= {model}>
-          {`${brand}/${model}`}          
-        </Link>
+      renderCell: params =>(
+        <div>
+          {`${params.row.brand} / ${params.row.model}`}
+        </div>
       )
     },
     {
       field: 'model',
       headerName: 'Modelo',
-      width: 250,
+      width: 150,
     },
     {
       field: 'color',
       headerName: 'Cor',
-      width: 200,
+      width: 125,
     },
     {
       field: 'year_manufacture',
@@ -55,22 +52,22 @@ export default function CustomerList() {
     {
       field: 'imported',
       headerName: 'Importado',
-      width: 200,
+      width: 150,
       renderCell: params => (
-          params.value ? "SIM" : ""
+          params.value == 1 ? "SIM" : ""
         )
     },
     {
       field: 'plates',
       headerName: 'Placas',
-      width: 200
+      width: 150
     },
     {
       field: 'selling_price',
       headerName: 'Preço de Venda',
       width: 200,
-      renderCell: params => (
-        params.value.toLocaleString("pt-BR", {style: "currency", currency: "BRL"})
+      valueGetter: (value) => Number(value).toLocaleString(
+        'pt-BR', { style: 'currency', currency: 'BRL' }
       )
     },
     {
@@ -128,7 +125,7 @@ export default function CustomerList() {
     // Exibe a tela de espera
     showWaiting()
     try {
-      const result = await myfetch.get('/cars?by=name')
+      const result = await myfetch.get('/cars?by=id')
       
       // Coloca o resultado no vetor cars
       setState({ ...state, cars: result })
