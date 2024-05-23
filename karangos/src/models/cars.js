@@ -6,11 +6,6 @@ maxYearManufacture.setFullYear(maxYearManufacture.getFullYear())
 const minYearManufacture = new Date()
 minYearManufacture.setFullYear(minYearManufacture.getFullYear() - 64)
 
-const isImported = z.boolean({
-    required_error: "isImported is required",
-    invalid_type_error: "isImported must be a boolean",
-  })
-
 const Car = z.object({
   brand:
     z.string()
@@ -31,6 +26,10 @@ const Car = z.object({
 
   imported:
    z.boolean({ message: 'Valor precisa ser Sim ou Não'}),
+
+  plates:
+   z.string()
+   .refine(val => val.length === 8, { message: 'O número da placa está incompleto' }),
 
   selling_price:
     z.number()
