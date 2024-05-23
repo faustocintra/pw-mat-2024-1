@@ -1,8 +1,19 @@
-# React + Vite
+# Comando de criação do projeto Karangos
+* npm create vite@latest
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Perguntas que o comando faz:
+* Ok to proceed? y
+* Project name: karangos
+* Select a framework: React
+* Select a variant: JavaScript
 
-Currently, two official plugins are available:
+Em seguida, executar os seguintes comandos no terminal:
+* cd karangos
+* npm install
+* npm run dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Instalação de bibliotecas adicionais no projeto front-end
+* npm install react-router-dom
+* npm install @mui/material @emotion/react @emotion/styled
+* npm install @fontsource/roboto
+* npm install @mui/icons-material
