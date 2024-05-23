@@ -62,6 +62,34 @@ export default function CarList() {
       type: "number",
       valueGetter: (value) => Number(value).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}),
     },
+    {
+      field: '_edit',
+      headerName: 'Editar',
+      headerAlign: 'center',
+      align: 'center',
+      width: 90,
+      sortable: false,
+      renderCell: params => (
+        <Link to={'./' + params.id}>
+          <IconButton aria-label="Editar">
+            <EditIcon />
+          </IconButton>
+        </Link>
+      )
+    },
+    {
+      field: '_delete',
+      headerName: 'Excluir',
+      headerAlign: 'center',
+      align: 'center',
+      width: 90,
+      sortable: false,
+      renderCell: params => (
+        <IconButton aria-label="Excluir" onClick={() => handleDeleteButtonClick(params.id)}>
+          <DeleteForeverIcon color="error" />
+        </IconButton>
+      )
+    },
   ]
   const [state, setState] = React.useState({
     cars: []
