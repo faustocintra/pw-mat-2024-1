@@ -173,7 +173,6 @@ export default function CarForm() {
             variant="filled"
             required
             fullWidth
-            autoFocus
             value={car.model}
             onChange={handleFieldChange} 
             error={inputErrors?.model}
