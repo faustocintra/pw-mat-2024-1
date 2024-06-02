@@ -11,8 +11,14 @@ import myfetch from '../../lib/myfetch'
 import { ZodError } from 'zod'
 import Cars from '../../models/cars'
 import MenuItem from '@mui/material/MenuItem'
-import Checkbox from '@mui/material/Checkbox';
 import InputMask from 'react-input-mask'
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
+import FormLabel from '@mui/material/FormLabel';
+import Checkbox from '@mui/material/Checkbox';
+import {yellow } from '@mui/material/colors';
+
 
 export default function CarForm() {
   
@@ -40,66 +46,46 @@ export default function CarForm() {
     { value: 'amarelo', label: 'amarelo' },
     { value: 'azul', label: 'azul' },
     { value: 'branco', label: 'branco' },
+    { value: 'cinza', label: 'cinza' },
     { value: 'laranja', label: 'laranja' },
+    { value: 'prata', label: 'prata' },
     { value: 'preto', label: 'preto' },
     { value: 'verde', label: 'verde' },
     { value: 'vermelho', label: 'vermelho' },
   ]
 
-  const years = [
-    { value: '2024', label: '2024' }, { value: '2023', label: '2023' }, { value: '2022', label: '2022' },
-    { value: '2021', label: '2022' }, { value: '2020', label: '2020' }, { value: '2019', label: '2019' },
-    { value: '2018', label: '2018' },{ value: '2017', label: '2017' },{ value: '2016', label: '2016' },
-    { value: '2015', label: '2015' },{ value: '2014', label: '2014' },{ value: '2013', label: '2013' },
-    { value: '2012', label: '2012' },{ value: '2011', label: '2011' },{ value: '2010', label: '2010' },
-    { value: '2009', label: '2009' },{ value: '2008', label: '2008' },{ value: '2007', label: '2007' },
-    { value: '2006', label: '2006' },{ value: '2005', label: '2005' },{ value: '2004', label: '2004' },
-    { value: '2003', label: '2003' },{ value: '2002', label: '2002' },{ value: '2001', label: '2001' },
-    { value: '2000', label: '2000' },{ value: '1999', label: '1999' },{ value: '1998', label: '1998' },
-    { value: '1997', label: '1997' },{ value: '1996', label: '1996' },{ value: '1995', label: '1995' },
-    { value: '1994', label: '1994' },{ value: '1993', label: '1993' },{ value: '1992', label: '1992' },
-    { value: '1991', label: '1991' },{ value: '1990', label: '1990' },{ value: '1989', label: '1989' },
-    { value: '1988', label: '1988' },{ value: '1987', label: '1987' },{ value: '1986', label: '1986' },
-    { value: '1985', label: '1985' },{ value: '1984', label: '1984' },{ value: '1983', label: '1983' },
-    { value: '1982', label: '1982' },{ value: '1981', label: '1981' },{ value: '1980', label: '1980' },
-    { value: '1979', label: '1979' },{ value: '1978', label: '1978' },{ value: '1977', label: '1977' },
-    { value: '1976', label: '1976' },{ value: '1975', label: '1975' },{ value: '1974', label: '1974' },
-    { value: '1973', label: '1973' },{ value: '1972', label: '1971' },{ value: '1970', label: '1970' },
-    { value: '1969', label: '1969' },{ value: '1968', label: '1968' },{ value: '1967', label: '1967' },
-    { value: '1966', label: '1966' },{ value: '1965', label: '1965' },{ value: '1964', label: '1964' },
-    { value: '1963', label: '1963' },{ value: '1962', label: '1962' },{ value: '1961', label: '1961' },
-    { value: '1960', label: '1960' },{ value: '1959', label: '1959' },{ value: '1958', label: '1958' },
-    { value: '1957', label: '1957' },{ value: '1956', label: '1956' },{ value: '1955', label: '1955' },
-    { value: '1954', label: '1954' },{ value: '1953', label: '1953' },{ value: '1952', label: '1952' },
-    { value: '1951', label: '1951' },
-  ]
-
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({length: currentYear - 1950 + 1}, (_, i) => 
+  currentYear - i).map(year => ({ value: year, label: year}));
 
   const plateMaskFormatChars = {
     '9': '[0-9]',
     '$': '[a-j]',
     'A': '[a-z]',  
   }
-
-
   const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
   const { notify, Notification } = useNotification()
   const { showWaiting, Waiting } = useWaiting()
   const navigate = useNavigate()
 
-  // const phoneMaskFormatChars = {
-  //   '9': '[0-9]',
-  //   '%': '[\s0-9]'  // \s significa espaço em branco
-  // }
-
   const params = useParams()
 
   function handleFieldChange(e) {
-    // Tira uma cópia do objeto que representa o cliente
+    // Tira uma cópia do objeto que representa o carro
     const carsCopy = { ...cars }
-    // Atualiza o campo modificado em customerCopy
-    carsCopy[e.target.name] = e.target.value
-    // Atualiza a variável de estado, substituindo o objeto customer
+
+    //valida se o elemento é um checkbox
+    if (e.target.type === 'checkbox') {
+
+      //se o campo do checkbox estiver marcado será atribuido o valor de 1,
+      //se não estiver será atribuido o valor de 0
+      carsCopy[e.target.name] = e.target.checked ? 1 : 0
+
+    } else {
+      carsCopy[e.target.name] = e.target.value
+    }
+
+    // Atualiza a variável de estado, substituindo o objeto car
     // pela cópia atualizada
     setState({ ...state, cars: carsCopy, formModified: true })
   }
@@ -113,18 +99,18 @@ export default function CarForm() {
       // por meio do model Customer
       Cars.parse(cars)
 
-      // Envia os dados para o back-end para criar um novo cliente
+      // Envia os dados para o back-end para criar um novo carro
       // no banco de dados
       // Se houver parâmetro na rota, significa que estamos editando.
       // Portanto, precisamos enviar os dados ao back-end com o verbo PUT
       if(params.id) await myfetch.put(`/cars/${params.id}`, cars)
       
       // Senão, os dados serão enviados com o método POST para a criação de
-      // um novo cliente
+      // um novo carro
       else await myfetch.post('/cars', cars)
 
       // Deu certo, vamos exibir a mensagem de feedback que, quando fechada,
-      // vai nos mandar de volta para a listagem de clientes
+      // vai nos mandar de volta para a listagem de carros
       notify('Item salvo com sucesso.', 'success', 4000, () => {
         navigate('..', { relative: 'path', replace: true })
       })
@@ -153,7 +139,7 @@ export default function CarForm() {
   // useEffect() que é executado uma vez no carregamento da página.
   // Verifica se a rota tem parâmetros e, caso tenha, significa que estamos
   // vindo do botão de edição. Nesse caso, chama a função loadData() para
-  // buscar os dados do cliente a ser editado no back-end
+  // buscar os dados do carro a ser editado no back-end
   React.useEffect(() => {
     if(params.id) loadData()
   }, [])
@@ -210,7 +196,7 @@ export default function CarForm() {
             helperText={inputErrors?.brand} 
           />
 
-<TextField 
+            <TextField 
             name="model"
             label="modelo"
             variant="filled"
@@ -222,7 +208,6 @@ export default function CarForm() {
             error={inputErrors?.model}
             helperText={inputErrors?.model} 
           />
-
 
             <TextField 
             name="color"
@@ -266,19 +251,34 @@ export default function CarForm() {
             }
           </TextField>
 
-          <TextField 
+          <FormControl component="imported">
+          <FormLabel component="imported">Importado</FormLabel>
+          <RadioGroup
+            aria-label="imported"
+            defaultValue="0"
             name="imported"
-            label="Importado"
-            variant="filled"
-            required
-            fullWidth
             value={cars.imported}
             onChange={handleFieldChange}
-            error={inputErrors?.imported}
-            helperText={inputErrors?.imported}  
           >
-           
-          </TextField>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={cars.imported}
+                onChange={handleFieldChange}
+                name="imported"
+                size="medium"
+                sx={{
+                  color: yellow[600],
+                  '&.Mui-checked': {
+                    color: yellow[600],
+                  },
+                }}
+              />
+            }
+            label="Imported"
+          />  
+          </RadioGroup>
+        </FormControl>
 
           <InputMask
             mask="AAA-9$99"
@@ -311,8 +311,8 @@ export default function CarForm() {
             onChange={handleFieldChange} 
             error={inputErrors?.selling_price}
             helperText={inputErrors?.selling_price}  
+            type='Number'
           />
-          
           <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>
             <Button
               variant="contained"
@@ -321,7 +321,6 @@ export default function CarForm() {
             >
               Salvar
             </Button>
-
             <Button
               variant="outlined"
               onClick={handleBackButtonClick}
@@ -329,16 +328,8 @@ export default function CarForm() {
               Voltar
             </Button>
           </Box>
-
-          {/* <Box sx={{ fontFamily: 'monospace', display: 'flex', flexDirection: 'column', width: '100%' }}>
-            {JSON.stringify(customer)}
-            <hr />
-            {JSON.stringify(inputErrors)}
-          </Box> */}
-        
         </form>
       </Box>
-
     </>
   )
 }
