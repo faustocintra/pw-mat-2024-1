@@ -35,6 +35,11 @@ export default function CarList() {
 			)
 		},
 		{
+			field: 'model',
+			headerName: 'Modelo',
+			width: 200
+		},
+		{
 			field: 'color',
 			headerName: 'Cor',
 			width: 200
