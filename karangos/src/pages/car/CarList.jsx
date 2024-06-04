@@ -29,9 +29,9 @@ export default function CarList() {
 			headerName: 'Marca / Modelo',
 			width: 250, 
 			renderCell: params => (
-				<Link to={'./' + params.id}>
-					
-				</Link>
+				<div>
+          			{`${params.row.brand} / ${params.row.model}`}
+        		</div>
 			)
 		},
 		{
@@ -49,7 +49,7 @@ export default function CarList() {
 			headerName: 'Importado?',
 			width: 200,
 			renderCell: params => (
-				params.value ? "SIM" : ""
+				params.value == 1 ? "SIM" : ""
 			)
 		},
 		{
@@ -61,9 +61,10 @@ export default function CarList() {
 			field: 'selling_price',
 			headerName: 'Preço de venda',
 			width: 200,
-			renderCell: params => (
-				params.value.toLocaleString("pt-BR", {style: "currency", currency: "BRL"})
+			valueGetter: (value) => Number(value).toLocaleString(
+				"pt-BR", {style: "currency", currency: "BRL"}
 			)
+			
 		},
 		{
 			field: '_edit',
@@ -120,7 +121,7 @@ export default function CarList() {
 		// Exibe a tela de espera
 		showWaiting()
 		try {
-			const result = await myfetch.get('/cars?by=name')
+			const result = await myfetch.get('/cars?by=brand')
 
 			// Coloca o resultado no vetor cars
 			setState({ ...state, cars: result })

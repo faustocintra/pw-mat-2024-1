@@ -2,6 +2,8 @@ import { z } from 'zod'
 
 const maxManufactureYear = new Date()   // Data de hoje
 maxManufactureYear.setFullYear(maxManufactureYear.getFullYear())
+const minManufactureYear = new Date(1951, 0, 1)   // 1951
+minManufactureYear.setFullYear(minManufactureYear.getFullYear())
 
 const Car = z.object({
     brand:
@@ -17,12 +19,10 @@ const Car = z.object({
         .max(12, { message: 'A cor pode ter, no máximo, 12 caracteres' }),
     
     year_manufacture:
-        z.string()
-        .transform((val) => parseInt(val))
-        .pipe(z.number()
-        .min(1951, { message: 'O ano de fabricação está muito no passado' })
-        .max(2024, { message: 'O veículo deve ser deste ano ou antes' }))
-        .transform((val) => val.toString()),
+        z.coerce.date()
+        .min(minManufactureYear, { message: 'O ano de fabricação está muito no passado' })
+        .max(maxManufactureYear, { message: 'O veículo deve ser deste ano ou antes' })
+        .nullable(),     // O campo é opcional
 
     imported:
         z.coerce.boolean({ message: 'A resposta só pode ser sim ou não' }),
@@ -32,7 +32,7 @@ const Car = z.object({
         .length(8, { message: 'A placa deve ter, exatamente, 8 caracteres' }),
 
     selling_price:
-        z.number()
+        z.coerce.number()
         .min(1000, { message: 'O valor pode ser, no mínimo, 1.000' })
         .max(5000000, { message: 'O valor pode ser, no máximo, 5.000.000' }),
 })

@@ -16,7 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import myfetch from '../../lib/myfetch'
 import Car from '../../models/car'
 import { ZodError } from 'zod'
-import { FormControlLabel } from '@mui/material'
+import { FormControlLabel, FilledInput, InputAdornment } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox'
 
 export default function CarForm() {
@@ -44,6 +44,8 @@ export default function CarForm() {
 
   const maxManufactureYear = new Date()   // Data de hoje
   maxManufactureYear.setFullYear(maxManufactureYear.getFullYear())
+  const minManufactureYear = new Date(1951, 1, 1)   // 1951
+  minManufactureYear.setFullYear(minManufactureYear.getFullYear())
 
   const colors = [
     { value: 'yellow', label: 'Amarelo' },
@@ -142,7 +144,7 @@ export default function CarForm() {
 
       // Converte o formato de data armazenado no banco de dados
       // para o formato reconhecido pelo componente DatePicker
-      result.birth_date = parseISO(result.birth_date)
+      result.year_manufacture = parseISO(result.year_manufacture)
 
       setState({ ...state, car: result })
     }
@@ -172,7 +174,7 @@ export default function CarForm() {
       <Waiting />
 
       <Typography variant="h1" gutterBottom>
-        {params.id ? `Editar cliente ${params.id}` : 'Cadastrar novo veículo'}
+        {params.id ? `Editar veículo ${params.id}` : 'Cadastrar novo veículo'}
       </Typography>
 
       <Box className="form-fields">
@@ -187,8 +189,8 @@ export default function CarForm() {
             autoFocus
             value={car.brand}
             onChange={handleFieldChange}
-            error={inputErrors?.name}
-            helperText={inputErrors?.name}
+            error={inputErrors?.brand}
+            helperText={inputErrors?.brand}
           />
 
           <TextField
@@ -199,8 +201,8 @@ export default function CarForm() {
             fullWidth
             value={car.model}
             onChange={handleFieldChange}
-            error={inputErrors?.name}
-            helperText={inputErrors?.name}
+            error={inputErrors?.model}
+            helperText={inputErrors?.model}
           />
 
           <TextField
@@ -232,7 +234,10 @@ export default function CarForm() {
               required
               value={car.year_manufacture}
               onChange={ value => handleFieldChange({ 
-                target: { name: 'year_manufacture', value }}
+                target: { 
+                  name: 'year_manufacture',
+                  value: value.getFullYear()
+                }}
               )}
               slotProps={{
                 textField: {
@@ -242,7 +247,7 @@ export default function CarForm() {
                   helperText: inputErrors?.year_manufacture
                 }
               }}
-              minDate={new Date(1951, 1, 1)}
+              minDate={minManufactureYear}
               maxDate={maxManufactureYear}
             />
           </LocalizationProvider>
@@ -271,15 +276,34 @@ export default function CarForm() {
             name="selling_price"
             label="Preço de venda"
             variant="filled"
+            type="number"
             required
             fullWidth
             value={car.selling_price}
-            onChange={handleFieldChange}
+            onChange={(event) => handleFieldChange({
+              target: {
+                name: 'imported',
+                value: event.target.checked
+              }
+            })}
+            error={inputErrors?.selling_price}
+            helperText={inputErrors?.selling_price} 
+            InputProps={{
+              startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+            }}
           />
 
           <FormControlLabel
             sx={{ display: 'inline', justifyContent: 'space-around', width: '20%' }}
-            control={<Checkbox />}
+            control={<Checkbox 
+              name="imported"
+              label="Importado"
+              variant="filled"
+              value={car.imported}
+              onChange={handleFieldChange}
+              error={inputErrors?.imported}
+              helperText={inputErrors?.imported} 
+            />}
             label="É importado?"
           />
 
