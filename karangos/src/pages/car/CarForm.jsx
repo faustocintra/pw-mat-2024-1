@@ -280,12 +280,7 @@ export default function CarForm() {
             required
             fullWidth
             value={car.selling_price}
-            onChange={(event) => handleFieldChange({
-              target: {
-                name: 'imported',
-                value: event.target.checked
-              }
-            })}
+            onChange={handleFieldChange}
             error={inputErrors?.selling_price}
             helperText={inputErrors?.selling_price} 
             InputProps={{
@@ -300,7 +295,12 @@ export default function CarForm() {
               label="Importado"
               variant="filled"
               value={car.imported}
-              onChange={handleFieldChange}
+              onChange={(event) => handleFieldChange({
+                target: {
+                  name: 'imported',
+                  value: event.target.checked
+                }
+              })}
               error={inputErrors?.imported}
               helperText={inputErrors?.imported} 
             />}
