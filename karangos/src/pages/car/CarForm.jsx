@@ -136,7 +136,7 @@ export default function CarForm() {
 
       // Converte o formato de data armazenado no banco de dados
       // para o formato reconhecido pelo componente DatePicker
-      result.birth_date = parseISO(result.birth_date)
+      result.year_manufacture = parseISO(result.year_manufacture)
 
       setState({ ...state, car: result })
     }
@@ -327,3 +327,4 @@ export default function CarForm() {
   )
 
 }
+
