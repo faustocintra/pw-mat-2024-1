@@ -20,7 +20,7 @@ const Car = z.object({
 
   year_manufacture:
     z.string()
-    .refine(value => parseFloat(value) >= 1960 && parseFloat(value) <= currentYear, { message: `O ano de fabricação deve ser entre 1960 e ${currentYear}` }),
+    .refine(value => parseFloat(value) >= 1951 && parseFloat(value) <= currentYear, { message: `O ano de fabricação deve ser entre 1951 e ${currentYear}` }),
   
   imported:
     z.string() // os dados já cadastrados estão como 0 e 1, achei melhor manter assim ao invés de colocar booleano para evitar inconsistência de dados
