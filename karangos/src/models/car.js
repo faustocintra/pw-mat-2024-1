@@ -1,16 +1,10 @@
 import { z } from 'zod'
-/*
-  O cliente deve ser maior de 18 anos.
-  Por isso, para validar a data de nascimento, calculamos
-  a data máxima em que o cliente pode ter nascido para ter
-  18 anos na data de hoje
-*/
+
 const maxYearManufacture = new Date()   // Data de hoje
 maxYearManufacture.setFullYear(maxYearManufacture.getFullYear())
 
-// O cliente pode ter nascido, no máximo, há 120 anos
 const minYearManufacture = new Date()
-minYearManufacture.setFullYear(minYearManufacture.getFullYear() - 64)
+minYearManufacture.setFullYear(minYearManufacture.getFullYear() - 73)
 
 const Car = z.object({
   brand:

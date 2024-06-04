@@ -1,21 +1,24 @@
-import React from 'react'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import TextField from '@mui/material/TextField'
-import InputMask from 'react-input-mask'
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3'
-import { ptBR }  from 'date-fns/locale/pt-BR'
-import { parseISO } from 'date-fns'
-import MenuItem from '@mui/material/MenuItem'
-import Button from '@mui/material/Button'
-import useConfirmDialog from '../../ui/useConfirmDialog'
-import useNotification from '../../ui/useNotification'
-import useWaiting from '../../ui/useWaiting'
-import { useNavigate, useParams } from 'react-router-dom'
-import myfetch from '../../lib/myfetch'
-import Car from '../../models/car'
-import { ZodError } from 'zod'
+import React from 'react';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+import InputMask from 'react-input-mask';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
+import { ptBR }  from 'date-fns/locale/pt-BR';
+import { parseISO } from 'date-fns';
+import MenuItem from '@mui/material/MenuItem';
+import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import useConfirmDialog from '../../ui/useConfirmDialog';
+import useNotification from '../../ui/useNotification';
+import useWaiting from '../../ui/useWaiting';
+import { useNavigate, useParams } from 'react-router-dom';
+import myfetch from '../../lib/myfetch';
+import Car from '../../models/car';
+import { ZodError } from 'zod';
 
 export default function CarForm() {
   
@@ -39,6 +42,15 @@ export default function CarForm() {
     formModified,
     inputErrors
   } = state
+
+  const colors = [
+    { value: 'Amarelo', label: 'Amarelo'},
+    { value: 'Azul', label: 'Azul'},
+    { value: 'Branco', label: 'Branco'},
+    { value: 'Prata', label: 'Prata'},
+    { value: 'Preto', label: 'Preto'},
+    { value: 'Vermelho', label: 'Vermelho'}
+  ]
 
   const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
   const { notify, Notification } = useNotification()
@@ -140,6 +152,12 @@ export default function CarForm() {
     navigate('..', { relative: 'path', replace: true })
   }
 
+  const currentYear = new Date().getFullYear();
+  const years = [];
+  for (let year = currentYear; year >= 1951; year--) {
+    years.push(year);
+  }
+
   return(
     <>
 
@@ -186,23 +204,36 @@ export default function CarForm() {
             variant="filled"
             required
             fullWidth
+            select
             value={car.color}
             onChange={handleFieldChange}
             error={inputErrors?.color}
             helperText={inputErrors?.color}  
-          />
+            >
+            {
+              colors.map(s => 
+                <MenuItem key={s.value} value={s.value}>
+                  {s.label}
+                </MenuItem>
+              )
+            }
+          </TextField>
 
-<TextField 
-            name="year_manufacture"
-            label="Ano de fabricação"
-            variant="filled"
-            required
-            fullWidth
-            value={car.year_manufacture}
-            onChange={handleFieldChange}
-            error={inputErrors?.year_manufacture}
-            helperText={inputErrors?.year_manufacture}  
-          />
+          <FormControl variant="filled" fullWidth error={!!inputErrors?.year_manufacture}>
+            <InputLabel>Ano de fabricação</InputLabel>
+            <Select
+              name="year_manufacture"
+              value={car.year_manufacture}
+              onChange={handleFieldChange}
+            >
+              {years.map((year) => (
+                <MenuItem key={year} value={year}>
+                  {year}
+                </MenuItem>
+              ))}
+            </Select>
+            {inputErrors?.year_manufacture && <p>{inputErrors.year_manufacture}</p>}
+          </FormControl>
 
           <TextField 
             name="imported"
