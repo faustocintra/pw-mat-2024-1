@@ -37,12 +37,12 @@ export default function CarList() {
 		{
 			field: 'model',
 			headerName: 'Modelo',
-			width: 200
+			width: 180
 		},
 		{
 			field: 'color',
 			headerName: 'Cor',
-			width: 200
+			width: 180
 		},
 		{
 			field: 'year_manufacture',
