@@ -48,16 +48,16 @@ export default function CarForm() {
   minManufactureYear.setFullYear(minManufactureYear.getFullYear())
 
   const colors = [
-    { value: 'yellow', label: 'Amarelo' },
-    { value: 'blue', label: 'Azul' },
-    { value: 'white', label: 'Branco' },
-    { value: 'gray', label: 'Cinza' },
-    { value: 'orange', label: 'Laranja' },
-    { value: 'silver', label: 'Prata' },
-    { value: 'black', label: 'Preto' },
-    { value: 'pink', label: 'Rosa' },
-    { value: 'green', label: 'Verde' },
-    { value: 'red', label: 'Vermelho' },
+    { value: 'Amarelo', label: 'Amarelo' },
+    { value: 'Azul', label: 'Azul' },
+    { value: 'Branco', label: 'Branco' },
+    { value: 'Cinza', label: 'Cinza' },
+    { value: 'Laranja', label: 'Laranja' },
+    { value: 'Prata', label: 'Prata' },
+    { value: 'Preto', label: 'Preto' },
+    { value: 'Rosa', label: 'Rosa' },
+    { value: 'Verde', label: 'Verde' },
+    { value: 'Vermelho', label: 'Vermelho' },
   ]
 
   const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
