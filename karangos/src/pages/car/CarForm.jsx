@@ -19,7 +19,6 @@ import { ZodError } from 'zod'
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 
-
 export default function CarForm() {
 
   const formDefaults = {
@@ -44,14 +43,14 @@ export default function CarForm() {
   } = state
 
   const colors = [
-    { value: 'amarelo', label: 'Amarelo' },
-    { value: 'azul', label: 'Azul' },
-    { value: 'bordo', label: 'Bordô' },
-    { value: 'branco', label: 'Branco' },
-    { value: 'carmim', label: 'Carmim' },
-    { value: 'ciano', label: 'Ciano' },
-    { value: 'prata', label: 'Prata' },
-    { value: 'preto', label: 'Preto' },
+    { value: 'Amarelo', label: 'Amarelo' },
+    { value: 'Azul', label: 'Azul' },
+    { value: 'Bordo', label: 'Bordô' },
+    { value: 'Branco', label: 'Branco' },
+    { value: 'Carmim', label: 'Carmim' },
+    { value: 'Ciano', label: 'Ciano' },
+    { value: 'Prata', label: 'Prata' },
+    { value: 'Preto', label: 'Preto' },
   ]
 
   const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
@@ -324,7 +323,6 @@ export default function CarForm() {
 
         </form>
       </Box>
-
     </>
   )
 }
