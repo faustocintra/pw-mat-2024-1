@@ -15,60 +15,59 @@ import useConfirmDialog from '../../ui/useConfirmDialog'
 import useNotification from '../../ui/useNotification'
 import useWaiting from '../../ui/useWaiting'
 
-export default function CarList() {
+export default function CustomerList() {
 
   const columns = [
-    { 
-      field: 'id', 
-      headerName: 'id', 
-      width: 70,
+    {
+      field: 'id',
+      headerName: 'Id',
+      width: 100,
       type: "number"
     },
     {
       field: 'brand',
-      headerName: 'marca',
-      width: 250,
+      headerName: 'Marca',
+      width: 200,
       renderCell: params => (
         <div>
-          {`${params.row.brand}/${params.row.model}`}
+          {`${params.row.brand} / ${params.row.model}`}
         </div>
       )
     },
     {
       field: 'model',
-      headerName: 'modelo',
-      width: 150
+      headerName: 'Modelo',
+      width: 150,
     },
     {
       field: 'color',
-      headerName: 'cor',
-      width: 200,
-      valueGetter: (value, row) => value + '/' + row.uf
+      headerName: 'Cor',
+      width: 125,
     },
     {
-      field: 'year.manufacture',
-      headerName: 'ano de fabricação',
+      field: 'year_manufacture',
+      headerName: 'Ano de Fabricação',
       width: 160
     },
     {
       field: 'imported',
-      headerName: 'importado?',
-      width: 200,
+      headerName: 'Importado',
+      width: 150,
       renderCell: params => (
-        params.value == 1 ?  'sim' : ''
+        params.value == 1 ? "SIM" : ""
       )
     },
     {
       field: 'plates',
-      headerName: 'placas',
-      width: 200
+      headerName: 'Placas',
+      width: 150
     },
     {
-      field: 'seling.price',
-      headerName: 'preço de venda',
+      field: 'selling_price',
+      headerName: 'Preço de Venda',
       width: 200,
       valueGetter: (value) => Number(value).toLocaleString(
-        'pt-BR', {style: 'currency', currency: 'BRL'}
+        'pt-BR', { style: 'currency', currency: 'BRL' }
       )
     },
     {
@@ -102,10 +101,10 @@ export default function CarList() {
   ]
 
   const [state, setState] = React.useState({
-    customers: []
+    cars: []
   })
   const {
-    customers
+    cars
   } = state
 
   const { askForConfirmation, ConfirmDialog } = useConfirmDialog()
@@ -126,12 +125,12 @@ export default function CarList() {
     // Exibe a tela de espera
     showWaiting()
     try {
-      const result = await myfetch.get('/customers?by=id')
-      
-      // Coloca o resultado no vetor customers
-      setState({ ...state, customers: result })
+      const result = await myfetch.get('/cars?by=id')
+
+      // Coloca o resultado no vetor cars
+      setState({ ...state, cars: result })
     }
-    catch(error) {
+    catch (error) {
       console.error(error)
       notify('ERRO: ' + error.message, 'error')
     }
@@ -142,18 +141,18 @@ export default function CarList() {
   }
 
   async function handleDeleteButtonClick(deleteId) {
-    if(await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
+    if (await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
       showWaiting()   // Exibe a tela de espera
       try {
         // Efetua uma chamada ao back-end para tentar excluir o item
-        await myfetch.delete(`/customers/${deleteId}`)
+        await myfetch.delete(`/cars/${deleteId}`)
 
         // Recarrega os dados da grid
         fetchData()
 
         notify('Item excluído com sucesso.')
       }
-      catch(error) {
+      catch (error) {
         console.error(error)
         notify('ERRO: ' + error.message, 'error')
       }
@@ -163,7 +162,7 @@ export default function CarList() {
     }
   }
 
-  return(
+  return (
     <>
       <Waiting />
 
@@ -172,7 +171,7 @@ export default function CarList() {
       <ConfirmDialog />
 
       <Typography variant="h1" gutterBottom>
-        Listagem de veículos
+        Listagem de Carros
       </Typography>
 
       <Box
@@ -189,7 +188,7 @@ export default function CarList() {
             size="large"
             startIcon={<AddBoxIcon />}
           >
-            Novo veículo
+            Novo carro
           </Button>
         </Link>
       </Box>
@@ -197,7 +196,7 @@ export default function CarList() {
       <Paper elevation={10}>
         <Box sx={{ height: 400, width: '100%' }}>
           <DataGrid
-            rows={customers}
+            rows={cars}
             columns={columns}
             initialState={{
               pagination: {
@@ -209,7 +208,7 @@ export default function CarList() {
             pageSizeOptions={[5]}
           />
         </Box>
-      </Paper>     
+      </Paper>
     </>
   )
 }

@@ -18,9 +18,9 @@ import useWaiting from '../../ui/useWaiting'
 export default function CustomerList() {
 
   const columns = [
-    { 
-      field: 'id', 
-      headerName: 'Cód.', 
+    {
+      field: 'id',
+      headerName: 'Cód.',
       width: 70,
       type: "number"
     },
@@ -106,11 +106,11 @@ export default function CustomerList() {
     showWaiting()
     try {
       const result = await myfetch.get('/customers?by=name')
-      
+
       // Coloca o resultado no vetor customers
       setState({ ...state, customers: result })
     }
-    catch(error) {
+    catch (error) {
       console.error(error)
       notify('ERRO: ' + error.message, 'error')
     }
@@ -121,7 +121,7 @@ export default function CustomerList() {
   }
 
   async function handleDeleteButtonClick(deleteId) {
-    if(await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
+    if (await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
       showWaiting()   // Exibe a tela de espera
       try {
         // Efetua uma chamada ao back-end para tentar excluir o item
@@ -132,7 +132,7 @@ export default function CustomerList() {
 
         notify('Item excluído com sucesso.')
       }
-      catch(error) {
+      catch (error) {
         console.error(error)
         notify('ERRO: ' + error.message, 'error')
       }
@@ -142,7 +142,7 @@ export default function CustomerList() {
     }
   }
 
-  return(
+  return (
     <>
       <Waiting />
 
@@ -188,7 +188,7 @@ export default function CustomerList() {
             pageSizeOptions={[5]}
           />
         </Box>
-      </Paper>     
+      </Paper>
     </>
   )
 }
