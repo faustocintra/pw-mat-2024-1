@@ -25,7 +25,7 @@ const Car = z.object({
     .max(maxYearManufacture, { message: 'A data passou a data de hoje' }),
 
   imported:
-   z.boolean({ message: 'Valor precisa ser Sim ou Não'}),
+   z.coerce.boolean({ message: 'Valor precisa ser Sim ou Não'}),
 
   plates:
    z.string()

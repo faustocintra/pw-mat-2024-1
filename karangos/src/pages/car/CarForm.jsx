@@ -26,7 +26,7 @@ export default function CarForm() {
     model: '',
     color: '',
     year_manufacture: null,
-    imported: null,
+    imported: '',
     plates: '',
     selling_price: ''
   }
@@ -75,10 +75,6 @@ export default function CarForm() {
     // pela cópia atualizada
     setState({ ...state, car: carCopy, formModified: true })
 
-    /* const CarForm = () => {
-       const [car, setCar] = useState({ imported: '', isChecked: false });
-       const [inputErrors, setInputErrors] = useState({});
-     }*/
   }
 
   async function handleFormSubmit(e) {
