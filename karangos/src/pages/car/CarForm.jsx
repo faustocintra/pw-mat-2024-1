@@ -3,15 +3,13 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputMask from 'react-input-mask';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { ptBR }  from 'date-fns/locale/pt-BR';
 import { parseISO } from 'date-fns';
 import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import Select from '@mui/material/Select';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormHelperText from '@mui/material/FormHelperText';
 import useConfirmDialog from '../../ui/useConfirmDialog';
 import useNotification from '../../ui/useNotification';
 import useWaiting from '../../ui/useWaiting';
@@ -20,6 +18,7 @@ import myfetch from '../../lib/myfetch';
 import Car from '../../models/car';
 import { ZodError } from 'zod';
 
+
 export default function CarForm() {
   
   const formDefaults = {
@@ -27,7 +26,7 @@ export default function CarForm() {
     model: '',
     color: '',
     year_manufacture: null,
-    imported: '',
+    imported: false,
     plates: '',
     selling_price: ''
   }
@@ -57,39 +56,28 @@ export default function CarForm() {
   const { showWaiting, Waiting } = useWaiting()
   const navigate = useNavigate()
 
+  const plateMaskFormatChars = {
+    'A': '[A-J]',
+    '9': '[0-9]', 
+    '$': '[A-J0-9]',
+  }
+
   const params = useParams()
 
   function handleFieldChange(e) {
-    // Tira uma cópia do objeto que representa o cliente
     const carCopy = { ...car }
-    // Atualiza o campo modificado em customerCopy
     carCopy[e.target.name] = e.target.value
-    // Atualiza a variável de estado, substituindo o objeto customer
-    // pela cópia atualizada
     setState({ ...state, car: carCopy, formModified: true })
   }
 
   async function handleFormSubmit(e) {
-    e.preventDefault()    // Evita o recarregamento da página
-    // Exibir a tela de espera
+    e.preventDefault()   
     showWaiting(true)
     try {
-      // Invoca a validação dos dados de entrada da biblioteca Zod
-      // por meio do model Customer
       Car.parse(car)
-
-      // Envia os dados para o back-end para criar um novo cliente
-      // no banco de dados
-      // Se houver parâmetro na rota, significa que estamos editando.
-      // Portanto, precisamos enviar os dados ao back-end com o verbo PUT
       if(params.id) await myfetch.put(`/cars/${params.id}`, car)
-      
-      // Senão, os dados serão enviados com o método POST para a criação de
-      // um novo cliente
       else await myfetch.post('/cars', car)
 
-      // Deu certo, vamos exibir a mensagem de feedback que, quando fechada,
-      // vai nos mandar de volta para a listagem de clientes
       notify('Item salvo com sucesso.', 'success', 4000, () => {
         navigate('..', { relative: 'path', replace: true })
       })
@@ -97,8 +85,6 @@ export default function CarForm() {
     catch(error) {
       console.error(error)
       if(error instanceof ZodError) {
-        // Formamos um objeto contendo os erros do Zod e
-        // os colocamos na variável de estado inputErrors
         const errorMessages = {}
         for(let e of error.issues) errorMessages[e.path[0]] = e.message
         setState({ ...state, inputErrors: errorMessages })
@@ -106,7 +92,6 @@ export default function CarForm() {
       }
       else {
         console.error(error)
-        // Deu errado, exibimos o erro e permanecemos na página do formulário
         notify(error.message, 'error')
       }
     }
@@ -115,10 +100,6 @@ export default function CarForm() {
     }
   }
   
-  // useEffect() que é executado uma vez no carregamento da página.
-  // Verifica se a rota tem parâmetros e, caso tenha, significa que estamos
-  // vindo do botão de edição. Nesse caso, chama a função loadData() para
-  // buscar os dados do cliente a ser editado no back-end
   React.useEffect(() => {
     if(params.id) loadData()
   }, [])
@@ -128,8 +109,6 @@ export default function CarForm() {
     try {
       const result = await myfetch.get(`/cars/${params.id}`)
       
-      // Converte o formato de data armazenado no banco de dados
-      // para o formato reconhecido pelo componente DatePicker
       result.year_manufacture = parseISO(result.year_manufacture)
 
       setState({...state, car: result})
@@ -146,13 +125,12 @@ export default function CarForm() {
   async function handleBackButtonClick() {
     if(formModified && 
       ! await askForConfirmation('Há informações não salvas. Deseja realmente sair?')) {
-      return  // Sai sem fazer nada
+      return 
     }
-    // Navega para a página anterior
     navigate('..', { relative: 'path', replace: true })
   }
 
-  const currentYear = new Date().getFullYear();
+  const currentYear = (new Date()).getFullYear();
   const years = [];
   for (let year = currentYear; year >= 1951; year--) {
     years.push(year);
@@ -218,44 +196,71 @@ export default function CarForm() {
             }
           </TextField>
 
-          <FormControl variant="filled" fullWidth error={!!inputErrors?.year_manufacture}>
-            <InputLabel>Ano de fabricação</InputLabel>
-            <Select
-              name="year_manufacture"
-              value={car.year_manufacture}
-              onChange={handleFieldChange}
+          <TextField
+            name="year_manufacture"
+            label="Ano de fabricação"
+            variant="filled"
+            select
+            required
+            fullWidth
+            value={car.year_manufacture}
+            onChange={handleFieldChange}
+            error={!!inputErrors?.year_manufacture}
+            helperText={inputErrors?.year_manufacture}
             >
-              {years.map((year) => (
+            {years.map((year) => (
                 <MenuItem key={year} value={year}>
                   {year}
                 </MenuItem>
-              ))}
-            </Select>
-            {inputErrors?.year_manufacture && <p>{inputErrors.year_manufacture}</p>}
+            ))}
+          </TextField>
+
+          <FormControl component="fieldset" fullWidth>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="imported"
+                  checked={car.imported}
+                  onChange={(e) => {
+                    handleFieldChange({
+                      target: {
+                        name: e.target.name,
+                        value: e.target.checked
+                      }
+                    });
+                  }}
+                  error={inputErrors?.imported}
+                />
+              }
+              label="Importado"
+            />
+            {inputErrors?.imported && (
+              <FormHelperText error>
+                {inputErrors?.imported}
+              </FormHelperText>
+            )}
           </FormControl>
 
-          <TextField 
-            name="imported"
-            label="Importado"
-            variant="filled"
-            required
-            fullWidth
-            value={car.imported}
-            onChange={handleFieldChange}
-            error={inputErrors?.imported}
-            helperText={inputErrors?.imported}  
-          />
-
-          <TextField 
-            name="plates"
-            label="Placa"
-            variant="filled"
-            fullWidth
+          <InputMask
+            mask="AAA-9$99"
+            formatChars={plateMaskFormatChars}
+            maskChar=" "
             value={car.plates}
             onChange={handleFieldChange}
-            error={inputErrors?.plates}
-            helperText={inputErrors?.plates} 
-          />
+          >
+            {
+              () => 
+                <TextField 
+                  name="plates"
+                  label="Placa"
+                  variant="filled"
+                  required
+                  fullWidth 
+                  error={inputErrors?.plates}
+                  helperText={inputErrors?.plates}                   
+                />
+            }
+          </InputMask>
 
           <TextField 
             name="selling_price"
@@ -266,7 +271,17 @@ export default function CarForm() {
             value={car.selling_price}
             onChange={handleFieldChange} 
             error={inputErrors?.selling_price}
-            helperText={inputErrors?.selling_price}  
+            helperText={inputErrors?.selling_price}
+            inputProps={{
+              inputMode: 'numeric',
+              pattern: '[0-9]*',
+              onKeyPress: (event) => {
+                const charCode = event.which ? event.which : event.keyCode;
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                  event.preventDefault();
+                }
+              }
+            }}
           />
 
           <Box sx={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}>

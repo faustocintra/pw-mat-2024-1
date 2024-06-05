@@ -1,10 +1,9 @@
 import { z } from 'zod'
 
-const maxYearManufacture = new Date()   // Data de hoje
-maxYearManufacture.setFullYear(maxYearManufacture.getFullYear())
-
+const maxYearManufacture = new Date()
+maxYearManufacture.setFullYear(maxYearManufacture.getFullYear());
 const minYearManufacture = new Date()
-minYearManufacture.setFullYear(minYearManufacture.getFullYear() - 73)
+minYearManufacture.setFullYear(minYearManufacture.getFullYear() - 73);
 
 const Car = z.object({
   brand:
@@ -22,12 +21,11 @@ const Car = z.object({
   year_manufacture:
     z.coerce.date()
     .min(minYearManufacture, { message: 'O ano de fabricação do carro é muito antigo' })
-    .min(maxYearManufacture, { message: 'O ano de fabricação do carro deve ser no máximo o ano atual' })
+    .max(maxYearManufacture, { message: 'O ano de fabricação do carro deve ser no máximo o ano atual' })
     .nullable(), 
 
   imported:
     z.boolean(),
-
 
   plates:
     z.string()

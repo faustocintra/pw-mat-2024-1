@@ -98,23 +98,16 @@ export default function CarList() {
   const { notify, Notification } = useNotification()
   const { showWaiting, Waiting } = useWaiting()
 
-  /*
-    useEffect() com vetor de dependências vazio, para ser executado
-    uma única vez durante o carregamento inicial do componente e
-    disparar uma requisição ao back-end solicitando os dados a serem
-    exibidos
-  */
+ 
   React.useEffect(() => {
     fetchData()
   }, [])
 
   async function fetchData() {
-    // Exibe a tela de espera
     showWaiting()
     try {
       const result = await myfetch.get('/cars?by=brand')
-      
-      // Coloca o resultado no vetor customers
+
       setState({ ...state, cars: result })
     }
     catch(error) {
@@ -122,19 +115,16 @@ export default function CarList() {
       notify('ERRO: ' + error.message, 'error')
     }
     finally {
-      // Oculta a tela de espera
       showWaiting(false)
     }
   }
 
   async function handleDeleteButtonClick(deleteId) {
     if(await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {
-      showWaiting()   // Exibe a tela de espera
+      showWaiting()
       try {
-        // Efetua uma chamada ao back-end para tentar excluir o item
         await myfetch.delete(`/cars/${deleteId}`)
 
-        // Recarrega os dados da grid
         fetchData()
 
         notify('Item excluído com sucesso.')
@@ -144,7 +134,7 @@ export default function CarList() {
         notify('ERRO: ' + error.message, 'error')
       }
       finally {
-        showWaiting(false)  // Ocultar a tela de espera
+        showWaiting(false)
       }
     }
   }
@@ -165,7 +155,7 @@ export default function CarList() {
         sx={{
           display: 'flex',
           justifyContent: 'right',
-          mb: 2     // Margem inferior
+          mb: 2  
         }}
       >
         <Link to="./new">
