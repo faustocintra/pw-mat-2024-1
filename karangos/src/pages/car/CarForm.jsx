@@ -44,7 +44,7 @@ export default function CarForm() {
 
   const maxManufactureYear = new Date()   // Data de hoje
   maxManufactureYear.setFullYear(maxManufactureYear.getFullYear())
-  const minManufactureYear = new Date(1951, 1, 1)   // 1951
+  const minManufactureYear = new Date(1951, 0, 1)   // 1951
   minManufactureYear.setFullYear(minManufactureYear.getFullYear())
 
   const colors = [
