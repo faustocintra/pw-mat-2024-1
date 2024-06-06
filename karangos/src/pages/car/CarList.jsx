@@ -26,7 +26,7 @@ export default function CarList() {
     },
     {
       field: 'brand',
-      headerName: 'Marca',
+      headerName: 'Marca/Modelo',
       width: 210,
       renderCell: params => (
         <div>
