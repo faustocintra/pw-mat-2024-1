@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
 const maxYearManufacture = new Date()   
-DateActual.setFullYear(DateActual.getFullYear())
+maxYearManufacture.setFullYear(maxYearManufacture.getFullYear())
 
-const minYearManufacture = 1960
+const minYearManufacture = 1951
 
-const Car = z.object({
+const car = z.object({
 
     brand:
         z.string()
@@ -30,7 +30,7 @@ const Car = z.object({
         .length(8, { message: 'A placa deve ter, exatamente, 8 caracteres' }),
 
     selling_price:
-        z.number()
+        z.coerce.number()
         .min(1000, { message: 'O valor de venda deve ser, no minimo, R$ 1000,00 ' })
         .max(5000000,{ message: 'O valor de venda deve ser, no máximo, R$ 5.000.000,00'}),
 
@@ -39,4 +39,4 @@ const Car = z.object({
 
 })
 
-export default Car
+export default car
