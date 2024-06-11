@@ -15,7 +15,7 @@ import useConfirmDialog from '../../ui/useConfirmDialog'
 import useNotification from '../../ui/useNotification'
 import useWaiting from '../../ui/useWaiting'
 
-export default function CustomerList() {
+export default function CarList() {
 
   const columns = [
     { 
