@@ -20,5 +20,7 @@ export default function AppRoutes() {
     <Route path="/customers" element={ <CustomerList /> } />
     <Route path="/customers/new" element={ <CustomerForm /> } />
     <Route path="/customers/:id" element={ <CustomerForm /> } />
+
+    <Route path="/prova" element={ <prova2 /> } />
   </Routes>
 }
