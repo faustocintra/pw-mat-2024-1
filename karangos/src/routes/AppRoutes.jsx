@@ -9,6 +9,8 @@ import CarList from '../pages/car/CarList'
 import CustomerForm from '../pages/customer/CustomerForm'
 import CustomerList from '../pages/customer/CustomerList'
 
+import About from '../pages/About'
+
 export default function AppRoutes() {
   return <Routes>
     <Route path="/" element={ <Homepage /> } />
@@ -20,5 +22,7 @@ export default function AppRoutes() {
     <Route path="/customers" element={ <CustomerList /> } />
     <Route path="/customers/new" element={ <CustomerForm /> } />
     <Route path="/customers/:id" element={ <CustomerForm /> } />
+
+    <Route path="/about" element={ <About /> } />
   </Routes>
 }
