@@ -45,7 +45,7 @@ export default function Componente() {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={handleLike}></Button>
+        <Button size="small" onClick={handleLike}>Curtir</Button>
       </CardActions>
     </Card>
     </>
