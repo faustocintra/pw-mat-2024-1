@@ -55,11 +55,18 @@ export default function MainMenu() {
           Listagem de clientes
         </MenuItem>
 
-        <MenuItem onClick={handleClose} component={Link} to="/customers/new">
+        <MenuItem onClick={handleClose} component={Link} to="/customers/new" divider>
           Cadastro de clientes
+        </MenuItem>
+
+        {/* 12. Crie uma entrada de menu que carregue a rota recém-criada */}
+        <MenuItem onClick={handleClose} component={Link} to="/about">
+          Sobre o autor
         </MenuItem>
         
       </Menu>
     </div>
   );
 }
+
+
