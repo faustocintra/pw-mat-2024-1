@@ -60,8 +60,8 @@ export default function CarForm() {
 
   const platesMaskFormatChars = {
     '9': '[0-9]',
-    'A': '[A-Z]',
-    '$': '[0-9,A-J]'
+    'A': '[A-Z-a-z]',
+    '$': '[0-9-A-J-a-j]'
   }
 
   const params = useParams()
