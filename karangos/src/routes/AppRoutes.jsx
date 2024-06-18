@@ -11,6 +11,8 @@ import CustomerList from '../pages/customer/CustomerList'
 
 import Prova2 from '../pages/Prova2'
 
+import SobreProjeto from '../pages/SobreProjeto'
+
 export default function AppRoutes() {
   return <Routes>
     <Route path="/" element={ <Homepage /> } />
@@ -23,7 +25,9 @@ export default function AppRoutes() {
     <Route path="/customers/new" element={ <CustomerForm /> } />
     <Route path="/customers/:id" element={ <CustomerForm /> } />
 
-    <Route path="/sobreautor" element={ <Prova2 /> } />  {/* aumenta os likes */}
+    <Route path="/sobreautor" element={ <Prova2 /> } />  
+
+    <Route path="/sobreprojeto" element={ <SobreProjeto /> } /> 
   
   </Routes>
 }
