@@ -123,15 +123,15 @@ cars
       // Coloca o resultado no vetor cars
       setState({ ...state, cars: result })
     }
-    catch(error) {
+    catch (error) {
       console.error(error)
-      notify('ERRO: ' + error.message, 'error')
-    }
-    finally {
+      notify('ERRO: ' + error.message, 'error') //mostra mensagem de erro
+  }
+  finally {
       // Oculta a tela de espera
       showWaiting(false)
-    }
   }
+}
 
   async function handleDeleteButtonClick(deleteId) {
     if(await askForConfirmation('Deseja realmente excluir este item?', 'Confirmar operação')) {

@@ -1,20 +1,21 @@
 import React from 'react'
 import Typography from '@mui/material/Typography'
-import myfetch from '../../lib/myfetch'
+//import myfetch from '../lib/myfetch' está dando erro
 import Paper from '@mui/material/Paper'
-import useNotification from '../../ui/useNotification'
-import useWaiting from '../../ui/useWaiting'
+import useNotification from '../ui/useNotification'
+import useWaiting from '../ui/useWaiting'
+
 
 export default function SobreProjeto() {
-
     //declarando variavel info
     const [state, setState] = React.useState({
         info: []
-      })
-      const {
+    })
+    const {
         info: info
-      } = state
+    } = state
     info
+
     const { notify, Notification } = useNotification()
     const { showWaiting, Waiting } = useWaiting()
 
@@ -27,23 +28,24 @@ export default function SobreProjeto() {
         // Exibe a tela de espera
         showWaiting()
         try {
-            const result = await myfetch.get('https://api.faustocintra.com.br/about/1')
-
-            // Coloca o resultado no info
-            setState({ ...state, info: result })
-        }
-        catch (error) {
+            const response = await fetch('https://api.faustocintra.com.br/about/1')
+            const result = await response.json()
+      
+            // Coloca o resultado no estado
+            setState({ ...state, info: result.info })
+        } catch (error) {
+            // Em caso de erro, exibe uma notificação
             console.error(error)
-            notify('ERRO: ' + error.message, 'error') //mostra mensagem de erro
-        }
-        finally {
+            notify('ERRO: ' + error.message, 'error')
+        } finally {
             // Oculta a tela de espera
             showWaiting(false)
         }
     }
 
     return (
-        <>
+        <div>
+
             <Waiting />
 
             <Notification />
@@ -53,11 +55,10 @@ export default function SobreProjeto() {
                 Sobre o projeto Karangos
             </Typography>
 
-            <Paper>
-                {/* mostrando valor de info */}
+            {/* mostrando valor de info */}
+            <Paper >
                 <Typography>{info}</Typography>
             </Paper>
-
-        </>
+        </div>
     )
 }
