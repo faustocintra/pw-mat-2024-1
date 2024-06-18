@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom'
 
+
 export default function MainMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -58,7 +59,13 @@ export default function MainMenu() {
         <MenuItem onClick={handleClose} component={Link} to="/customers/new">
           Cadastro de clientes
         </MenuItem>
-        
+
+        <MenuItem onClick={handleClose} component={Link} to="/autor">
+          Sobre o autor
+        </MenuItem>
+        <MenuItem onClick={handleClose} component={Link} to="/projetoKarangos">
+          Sobre o Karangos
+        </MenuItem>
       </Menu>
     </div>
   );
